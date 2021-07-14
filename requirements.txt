@@ -7,3 +7,6 @@ sqlparse==0.4.1
 # auth
 djangorestframework
 djangorestframework_simplejwt
+
+# debug
+django-debug-toolbar
