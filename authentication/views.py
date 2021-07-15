@@ -2,8 +2,9 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from authentication.serializers import RegistrationSerializer
 from authentication.tools import get_tokens_for_user
@@ -17,12 +18,15 @@ class HelloView(APIView):
         return Response(content)
 
 
+class ThrottleTokenObtainPairView(TokenObtainPairView):
+    throttle_classes = [AnonRateThrottle]
+
+
 class RegistrationAPIView(APIView):
     """
     Register point for users
     """
     permission_classes = (AllowAny,)
-    throttle_classes = [UserRateThrottle]
     serializer_class = RegistrationSerializer
 
     def post(self, request):
