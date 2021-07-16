@@ -11,7 +11,11 @@ class Post(models.Model):
     Post in social network
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
     description = models.CharField(max_length=100000)
+
+    def __str__(self):
+        return self.title
 
 class Like(models.Model):
     """

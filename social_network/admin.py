@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from social_network.models import Post, Like
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user',)
+    list_display = ('id', 'user', 'title')
 
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'date', 'time')
