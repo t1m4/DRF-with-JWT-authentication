@@ -34,12 +34,10 @@ class RegistrationAPIView(APIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.POST)
-        if serializer.is_valid(raise_exception=True):
-            serializer.is_valid(raise_exception=True)
-            user = serializer.save()
-            # generate tokens and add them to the result
-            data = user.tokens
-            data.update(serializer.data)
-            return Response(data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        # generate tokens and add them to the result
+        data = user.tokens
+        data.update(serializer.data)
+        return Response(data, status=status.HTTP_201_CREATED)

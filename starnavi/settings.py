@@ -140,7 +140,7 @@ REST_FRAMEWORK = {
     },
 
     'NON_FIELD_ERRORS_KEY': 'error',
-    # 'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
