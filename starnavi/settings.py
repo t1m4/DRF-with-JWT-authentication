@@ -147,7 +147,7 @@ REST_FRAMEWORK = {
         'anon': '50/day',
         'user': '1000/day'
     },
-
+    'EXCEPTION_HANDLER': 'social_network.serializers.custom_exception_handler',
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
     'DEFAULT_AUTHENTICATION_CLASSES': [

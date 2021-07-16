@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.views import exception_handler
 
 from social_network.models import Post, Like
 from social_network.tools import get_object_or_none
@@ -45,3 +46,28 @@ class CreateLikeSerializer(serializers.ModelSerializer):
         del validated_data['post_id']
         validated_data['post'] = post
         return validated_data
+
+    def delete(self, validated_data):
+        print(validated_data)
+        pass
+
+
+def custom_exception_handler(exc, context):
+    # Call REST framework's default exception handler first,
+    # to get the standard error response.
+    response = exception_handler(exc, context)
+
+    # if response.data is list change it to dict
+    if isinstance(response.data, list):
+        response.data = {'error': response.data}
+    return response
+
+
+class UnlikeSerializer(serializers.ModelSerializer):
+    """ Serializer for create Like """
+    post_id = serializers.IntegerField(min_value=1, write_only=True)
+
+    class Meta:
+        model = Like
+        fields = ['post_id', 'date', 'time']
+        read_only_fields = ['date', 'time']
