@@ -155,3 +155,44 @@ SIMPLE_JWT = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module}:{funcName}:{lineno} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'info.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'starnavi.console_logger': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'file_logger': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+        }
+    }
+}

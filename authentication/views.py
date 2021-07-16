@@ -1,4 +1,6 @@
 # Create your views here.
+import logging
+
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,6 +11,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from authentication.serializers import RegistrationSerializer
+
+logger = logging.getLogger('starnavi.console_logger')
 
 
 class HelloView(APIView):
@@ -40,7 +44,6 @@ class LoginAPIView(TokenViewBase):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
-# class RegistrationAPIView(generics.GenericAPIView):
 class RegistrationAPIView(APIView):
     """
     Register point for users
