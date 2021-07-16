@@ -2,8 +2,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from social_network.models import User
-
 
 class AuthenticationTest(APITestCase):
     def setUp(self):

@@ -14,6 +14,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 # add new field 'last_request` in UserAdmin and register it
-from social_network.models import User
+from authentication.models import User
 
 admin.site.register(User)

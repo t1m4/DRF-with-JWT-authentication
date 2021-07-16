@@ -6,7 +6,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from social_network.serializers import RegistrationSerializer
+from authentication.serializers import RegistrationSerializer
 
 
 class HelloView(APIView):

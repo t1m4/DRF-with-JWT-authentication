@@ -1,8 +1,7 @@
-from django.conf.global_settings import AUTH_USER_MODEL
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from social_network.models import User
+from authentication.models import User
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -34,18 +33,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise ValidationError('Passwords are not equal')
         return data
 
+
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email',  'password1', 'password2')
+        fields = ('first_name', 'last_name', 'email', 'password1', 'password2')
 
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-
