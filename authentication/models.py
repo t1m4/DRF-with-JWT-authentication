@@ -72,3 +72,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         self.last_login = timezone.now()
         self.save(update_fields=['last_login',])
+
+    def update_last_request(self):
+        """
+        Update last request field after each request.
+        """
+        self.last_request = timezone.now()
+        self.save(update_fields=['last_request',])
+

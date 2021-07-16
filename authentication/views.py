@@ -1,6 +1,6 @@
 # Create your views here.
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
@@ -25,6 +25,7 @@ class ThrottleTokenObtainPairView(TokenObtainPairView):
     """
     throttle_classes = [AnonRateThrottle]
 
+
 class LoginAPIView(TokenViewBase):
     serializer_class = TokenObtainPairSerializer
     throttle_classes = [AnonRateThrottle]
@@ -37,6 +38,7 @@ class LoginAPIView(TokenViewBase):
             raise InvalidToken(e.args[0])
         serializer.user.update_last_login()
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
 
 # class RegistrationAPIView(generics.GenericAPIView):
 class RegistrationAPIView(APIView):
