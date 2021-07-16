@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include(debug_toolbar.urls)),
     path('auth/', include('authentication.urls')),
+    path('facebook/', include('social_network.urls')),
 ]
 
 schema_view = get_schema_view(

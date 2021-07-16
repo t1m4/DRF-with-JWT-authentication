@@ -35,11 +35,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+# Apps
+INSTALLED_APPS += [
     'authentication',
-
+    'social_network',
+]
+# Rest api
+INSTALLED_APPS += [
     'rest_framework',
     'rest_framework_simplejwt',
-
+]
+# Debug tools
+INSTALLED_APPS += [
     'debug_toolbar',
     'drf_yasg',
 ]
