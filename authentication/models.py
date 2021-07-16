@@ -65,3 +65,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
+
+    def update_last_login(self):
+        """
+        Update last login field after each login.
+        """
+        self.last_login = timezone.now()
+        self.save(update_fields=['last_login',])

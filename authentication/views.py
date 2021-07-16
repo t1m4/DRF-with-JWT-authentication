@@ -4,7 +4,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from authentication.serializers import RegistrationSerializer
 
@@ -23,13 +25,24 @@ class ThrottleTokenObtainPairView(TokenObtainPairView):
     """
     throttle_classes = [AnonRateThrottle]
 
+class LoginAPIView(TokenViewBase):
+    serializer_class = TokenObtainPairSerializer
+    throttle_classes = [AnonRateThrottle]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+        serializer.user.update_last_login()
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 # class RegistrationAPIView(generics.GenericAPIView):
 class RegistrationAPIView(APIView):
     """
     Register point for users
     """
-    permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
 
     def post(self, request):
