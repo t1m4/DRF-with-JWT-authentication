@@ -11,7 +11,7 @@ class PostAdmin(admin.ModelAdmin):
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'date', 'time')
     list_filter = ('date', )
-    search_fields = ('date', 'time')
+    search_fields = ('date',    'time')
 
 
 admin.site.register(Post, PostAdmin)
