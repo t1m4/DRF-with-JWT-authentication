@@ -1,9 +1,9 @@
 from django.db import models
 
-# Create your models here.
-from django.utils import timezone
-
 from authentication.models import User
+
+
+# Create your models here.
 
 
 class Post(models.Model):
@@ -17,11 +17,15 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+
 class Like(models.Model):
     """
     Like for every post
     """
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name='user_likes')
-    post = models.ForeignKey(Post, on_delete= models.CASCADE, related_name='post_likes')
-    date = models.DateField(default=timezone.now)
-    time = models.TimeField(default=timezone.now)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_likes')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'post']

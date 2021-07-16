@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework_simplejwt import views as jwt_views
 
 from . import views
 
@@ -10,5 +9,3 @@ urlpatterns = [
     path('api/analitics/', views.AnaliticsAPIView.as_view(), name='social_network-analitics'),
     path('api/activity/', views.ActivityAPIView.as_view(), name='social_network-activity'),
 ]
-
-
