@@ -8,7 +8,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
+from rest_framework_simplejwt.views import TokenViewBase
 
 from authentication.serializers import RegistrationSerializer
 
@@ -23,14 +23,10 @@ class HelloView(APIView):
         return Response(content)
 
 
-class ThrottleTokenObtainPairView(TokenObtainPairView):
-    """
-    Throttle Login point for users
-    """
-    throttle_classes = [AnonRateThrottle]
-
-
 class LoginAPIView(TokenViewBase):
+    """
+    Register point for users
+    """
     serializer_class = TokenObtainPairSerializer
     throttle_classes = [AnonRateThrottle]
 

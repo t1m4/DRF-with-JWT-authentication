@@ -10,12 +10,12 @@ class AuthenticationTest(APITestCase):
         self.register_data = {
             'email': 'test@mail.ru',
             'username': 'test',
-            'password': 'password',
-            'double_password': 'password',
+            'password': 'alksdfjs',
+            'double_password': 'alksdfjs',
         }
         self.login_data = {
             'username': 'test',
-            'password': 'password',
+            'password': 'alksdfjs',
         }
 
     def test_user_cannot_register_without_data(self):
@@ -42,9 +42,8 @@ class AuthenticationTest(APITestCase):
 
         # login
         self.login_data['username'] = 'invalid'
-        response= self.client.post(self.login_url, self.login_data)
+        response = self.client.post(self.login_url, self.login_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
 
     def test_user_cannot_login_with_invalid_password(self):
         # register
@@ -52,7 +51,7 @@ class AuthenticationTest(APITestCase):
 
         # login
         self.login_data['password'] = 'invalid'
-        response= self.client.post(self.login_url, self.login_data)
+        response = self.client.post(self.login_url, self.login_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_user_can_login(self):

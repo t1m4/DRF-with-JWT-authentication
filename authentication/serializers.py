@@ -1,3 +1,4 @@
+from django.contrib.auth import password_validation
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -27,8 +28,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Check that passwords are equal
+        Validate and Check that passwords are equal
         """
+        # Validate password
+        password_validation.validate_password(data['password'])
+
+        # Check password
         if data['password'] != data['double_password']:
             raise ValidationError('Passwords are not equal')
         return data

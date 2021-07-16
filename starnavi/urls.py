@@ -24,7 +24,7 @@ from rest_framework import permissions
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include(debug_toolbar.urls)),
-    path('', include('authentication.urls')),
+    path('auth/', include('authentication.urls')),
 ]
 
 schema_view = get_schema_view(
