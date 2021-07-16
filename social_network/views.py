@@ -2,12 +2,11 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from authentication.serializers import RegistrationSerializer
-from authentication.tools import get_tokens_for_user
+from social_network.serializers import RegistrationSerializer
 
 
 class HelloView(APIView):
@@ -19,9 +18,13 @@ class HelloView(APIView):
 
 
 class ThrottleTokenObtainPairView(TokenObtainPairView):
+    """
+    Throttle Login point for users
+    """
     throttle_classes = [AnonRateThrottle]
 
 
+# class RegistrationAPIView(generics.GenericAPIView):
 class RegistrationAPIView(APIView):
     """
     Register point for users
@@ -30,12 +33,13 @@ class RegistrationAPIView(APIView):
     serializer_class = RegistrationSerializer
 
     def post(self, request):
-
         serializer = self.serializer_class(data=request.POST)
         if serializer.is_valid(raise_exception=True):
+            serializer.is_valid(raise_exception=True)
             user = serializer.save()
-            token = get_tokens_for_user(user)
-            token.update(serializer.data)
-            return Response(token, status=status.HTTP_201_CREATED)
+            # generate tokens and add them to the result
+            data = user.tokens
+            data.update(serializer.data)
+            return Response(data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

@@ -7,6 +7,6 @@ sqlparse==0.4.1
 # auth
 djangorestframework
 djangorestframework_simplejwt
-
+drf-yasg
 # debug
 django-debug-toolbar

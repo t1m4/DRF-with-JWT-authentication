@@ -1,6 +1,8 @@
+from django.conf.urls import url
 from django.urls import path
-from . import views
 from rest_framework_simplejwt import views as jwt_views
+
+from . import views
 
 urlpatterns = [
     path('api/login/', views.ThrottleTokenObtainPairView.as_view(), name='authentication-login'),
@@ -8,3 +10,5 @@ urlpatterns = [
     path('api/register/', views.RegistrationAPIView.as_view(), name='authentication-register'),
     path('hello/', views.HelloView.as_view(), name='hello'),
 ]
+
+
