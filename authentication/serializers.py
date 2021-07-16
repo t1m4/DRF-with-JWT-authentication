@@ -37,18 +37,3 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if data['password'] != data['double_password']:
             raise ValidationError('Passwords are not equal')
         return data
-
-
-class UserSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'email', 'password1', 'password2')
-
-    def create(self, validated_data):
-        user = super(UserSerializer, self).create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user

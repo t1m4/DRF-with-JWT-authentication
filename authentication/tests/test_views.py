@@ -5,8 +5,8 @@ from rest_framework.test import APITestCase
 
 class AuthenticationTest(APITestCase):
     def setUp(self):
-        self.register_url = reverse('social_network-register')
-        self.login_url = reverse('social_network-login')
+        self.register_url = reverse('authentication-register')
+        self.login_url = reverse('authentication-login')
         self.register_data = {
             'email': 'test@mail.ru',
             'username': 'test',
