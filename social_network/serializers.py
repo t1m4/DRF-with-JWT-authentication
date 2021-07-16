@@ -22,7 +22,7 @@ class CreateLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ['post_id', 'date', 'time']
+        fields = ['id', 'post_id', 'date', 'time']
         read_only_fields = ['date', 'time']
 
     def create(self, validated_data):
@@ -34,9 +34,9 @@ class CreateLikeSerializer(serializers.ModelSerializer):
 
     def validate(self, validated_data):
         """
-        Validate post field using post_id
+        Validate post_id field
         if post doesn't exist, raise ValidationError
-        else add post fiedl in validated_data
+        else add post in validated_data
         """
         post_id = validated_data['post_id']
         post = get_object_or_none(Post, pk=post_id)
@@ -47,9 +47,34 @@ class CreateLikeSerializer(serializers.ModelSerializer):
         validated_data['post'] = post
         return validated_data
 
-    def delete(self, validated_data):
-        print(validated_data)
-        pass
+
+class UnlikeSerializer(serializers.ModelSerializer):
+    """ Serializer for create Like """
+    like_id = serializers.IntegerField(min_value=1, write_only=True)
+
+    class Meta:
+        model = Like
+        fields = ['like_id', ]
+
+    def save(self, user):
+        like = self.validated_data.get('like')
+        if like.user != user:
+            raise ValidationError("You can't delete this like.")
+        like.delete()
+
+    def validate(self, validated_data):
+        """
+        Validate like_id field
+        if like doesn't exist raise ValidationError
+        else add like in validation_data
+        """
+        like_id = validated_data['like_id']
+        like = get_object_or_none(Like, pk=like_id)
+        if like is None:
+            raise ValidationError("Like with that like_id doesn't exist")
+
+        validated_data['like'] = like
+        return validated_data
 
 
 def custom_exception_handler(exc, context):
@@ -58,16 +83,7 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     # if response.data is list change it to dict
-    if isinstance(response.data, list):
-        response.data = {'error': response.data}
+    if response is not None:
+        if isinstance(response.data, list):
+            response.data = {'error': response.data}
     return response
-
-
-class UnlikeSerializer(serializers.ModelSerializer):
-    """ Serializer for create Like """
-    post_id = serializers.IntegerField(min_value=1, write_only=True)
-
-    class Meta:
-        model = Like
-        fields = ['post_id', 'date', 'time']
-        read_only_fields = ['date', 'time']

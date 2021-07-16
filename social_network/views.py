@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from social_network.serializers import CreatePostSerializer, CreateLikeSerializer
+from social_network.serializers import CreatePostSerializer, CreateLikeSerializer, UnlikeSerializer
 
 
 class CreatePostAPIView(APIView):
@@ -32,7 +32,15 @@ class LikeAPIView(APIView):
 
 
 class UnlikeAPIView(APIView):
-    pass
+    serializer_class = UnlikeSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        # pass a user
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
 
 class AnaliticsAPIView(APIView):
