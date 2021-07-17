@@ -22,8 +22,10 @@ class CreateLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ['id', 'post_id', 'date', 'time']
-        read_only_fields = ['date', 'time']
+        # fields = ['id', 'post_id', 'date', 'time']
+        # read_only_fields = ['date', 'time']
+        fields = ['id', 'post_id', 'create_at']
+        read_only_fields = ['create_at']
 
     def create(self, validated_data):
         try:
@@ -74,6 +76,19 @@ class UnlikeSerializer(serializers.ModelSerializer):
             raise ValidationError("Like with that like_id doesn't exist")
 
         validated_data['like'] = like
+        return validated_data
+
+class DateSerializer(serializers.Serializer):
+    """ Serializer for validate date """
+    date_from = serializers.DateField()
+    date_to = serializers.DateField()
+
+    def validate(self, validated_data):
+        """
+        Date_to must occur after date_from
+        """
+        if validated_data['date_from'] > validated_data['date_to']:
+            raise serializers.ValidationError("date_to must occur after date_from")
         return validated_data
 
 
