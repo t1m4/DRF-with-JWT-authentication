@@ -52,15 +52,16 @@ class CreateLikeSerializer(serializers.ModelSerializer):
 
 class UnlikeSerializer(serializers.ModelSerializer):
     """ Serializer for create Like """
-    like_id = serializers.IntegerField(min_value=1, write_only=True)
+    post_id = serializers.IntegerField(min_value=1, write_only=True)
 
     class Meta:
         model = Like
-        fields = ['like_id', ]
+        fields = ['post_id', ]
 
     def save(self, user):
-        like = self.validated_data.get('like')
-        if like.user != user:
+        post = self.validated_data.get('post')
+        like = get_object_or_none(Like, post=post, user=user)
+        if not like:
             raise ValidationError("You can't delete this like.")
         like.delete()
 
@@ -70,13 +71,14 @@ class UnlikeSerializer(serializers.ModelSerializer):
         if like doesn't exist raise ValidationError
         else add like in validation_data
         """
-        like_id = validated_data['like_id']
-        like = get_object_or_none(Like, pk=like_id)
-        if like is None:
-            raise ValidationError("Like with that like_id doesn't exist")
+        post_id = validated_data['post_id']
+        post = get_object_or_none(Post, pk=post_id)
+        if post is None:
+            raise ValidationError("Post with that post_id doesn't exist")
 
-        validated_data['like'] = like
+        validated_data['post'] = post
         return validated_data
+
 
 class DateSerializer(serializers.Serializer):
     """ Serializer for validate date """
