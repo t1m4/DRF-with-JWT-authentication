@@ -15,7 +15,7 @@ class Post(models.Model):
     description = models.CharField(max_length=100000)
 
     def __str__(self):
-        return self.title
+        return "{}-{}".format(self.user, self.title)
 
 
 class Like(models.Model):
@@ -28,3 +28,6 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ['user', 'post']
+
+    def __str__(self):
+        return "{}-{}".format(self.user, self.post)
