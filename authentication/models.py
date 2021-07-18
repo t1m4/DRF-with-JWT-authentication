@@ -44,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
 
-    last_login = models.DateTimeField(blank=True, null=True)
+    last_login = models.DateTimeField(auto_now=True)
     date_joined = models.DateTimeField(auto_now=True)
     last_request = models.DateTimeField(default=timezone.now)
 
