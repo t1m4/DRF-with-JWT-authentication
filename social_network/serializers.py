@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import exception_handler
 
+from authentication.models import User
 from social_network.models import Post, Like
 from social_network.tools import get_object_or_none
 
@@ -94,9 +95,24 @@ class DateSerializer(serializers.Serializer):
         return validated_data
 
 
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=100)
+
+    def validate(self, validated_data):
+        """
+        user must exist
+        """
+        username = validated_data['username']
+        user = get_object_or_none(User, username=username)
+        if user is None:
+            raise ValidationError("User doesn't exist")
+        else:
+            validated_data['user'] = user
+        return validated_data
+
+
 def custom_exception_handler(exc, context):
-    # Call REST framework's default exception handler first,
-    # to get the standard error response.
+    # get the standard error response.
     response = exception_handler(exc, context)
 
     # if response.data is list change it to dict

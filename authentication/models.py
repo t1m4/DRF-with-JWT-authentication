@@ -1,10 +1,11 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
-
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from social_network.tools import datetime_format
 
 
 class CustomUserManager(BaseUserManager):
@@ -79,3 +80,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         self.last_request = timezone.now()
         self.save(update_fields=['last_request', ])
+
+    def get_activity(self):
+        """
+        return User activity
+        """
+        return datetime_format(self.last_login), datetime_format(self.last_request)

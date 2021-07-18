@@ -13,3 +13,6 @@ def from_date_to_datetime(date):
     Convert date to datetime object
     """
     return datetime.datetime(date.year, date.month, date.day)
+
+def datetime_format(date_and_time):
+    return date_and_time.strftime("%Y-%m-%d %H:%M:%S")

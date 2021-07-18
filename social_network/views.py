@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.db.models import Q, Count, DateField
-from django.db.models.functions import TruncDay, Cast
+from django.db.models.functions import TruncDay
 from django.utils.timezone import make_aware
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from social_network.models import Like
-from social_network.serializers import CreatePostSerializer, CreateLikeSerializer, UnlikeSerializer, DateSerializer
+from social_network.serializers import CreatePostSerializer, CreateLikeSerializer, UnlikeSerializer, DateSerializer, \
+    UserSerializer
 from social_network.tools import from_date_to_datetime
 
 
@@ -62,10 +63,10 @@ class AnalyticsAPIView(APIView):
         }
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
-        result = self.get_user_likes(request, serializer.validated_data)
+        result = self.get_user_likes(request.user, serializer.validated_data)
         return Response(result, status.HTTP_200_OK)
 
-    def get_user_likes(self, request, data, *args, **kwargs):
+    def get_user_likes(self, user, data, *args, **kwargs):
         """
         Getting likes from user posts, group by day and count
         """
@@ -75,8 +76,8 @@ class AnalyticsAPIView(APIView):
         result = Like.objects.filter(
             Q(create_at__gte=date_from) &
             Q(create_at__lte=date_to) &
-            # Q(user=request.user) # like made by user
-            Q(post__user=request.user)  # like made for user's post
+            # Q(user=user) # like made by user
+            Q(post__user=user)  # like made for user's post
         ).annotate(
             day=TruncDay('create_at', output_field=DateField())
         ).values('day').annotate(count=Count('id'))
@@ -84,4 +85,14 @@ class AnalyticsAPIView(APIView):
 
 
 class ActivityAPIView(APIView):
-    pass
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
+
+    def get(self, request):
+        username = request.GET.get('username')
+        serializer = self.serializer_class(data={'username': username})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data.get('user')
+        last_login, last_request = user.get_activity()
+        result = {'last_login': last_login, 'last_request': last_request}
+        return Response(result, status.HTTP_200_OK)
