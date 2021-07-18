@@ -17,12 +17,12 @@ class CreatePostViewTest(APITestCase):
         setup data for whole class
         """
         cls.create_post_url = reverse('social_network-create_post')
-        cls.user_one = {
+        cls.user_data = {
             'email': 'test1@mail.ru',
             'username': 'test1',
             'password': 'alksdfjs',
         }
-        u = User.objects.create(**cls.user_one)
+        u = User.objects.create(**cls.user_data)
         cls.access = u.tokens['access']
 
     def setUp(self):
@@ -60,12 +60,12 @@ class CreatePostViewTest(APITestCase):
 def like_and_unlike_setUp(self):
     self.like_url = reverse('social_network-like')
     self.unlike_url = reverse('social_network-unlike')
-    user_one = {
+    user_data = {
         'email': 'test1@mail.ru',
         'username': 'test1',
         'password': 'alksdfjs',
     }
-    u = User.objects.create(**user_one)
+    u = User.objects.create(**user_data)
     self.client.credentials(HTTP_AUTHORIZATION="Bearer " + u.tokens['access'])
 
     post_one = {
@@ -159,7 +159,6 @@ class AnalyticsViewTest(APITestCase):
     users_count = 3
     posts_count = 4
 
-    # if all posts likes for next user - posts_count + posts_count
     def setUp(self):
         self.analytics_url = reverse('social_network-analytics')
         self.date_from = "2021-07-01"
@@ -243,6 +242,38 @@ class AnalyticsViewTest(APITestCase):
         self.assertEqual(data, [])
 
     def test_cannot_get_analytics_with_invalid_date(self):
-        self.params = self.params.replace(self.date_from, self.date_from +"1")
+        self.params = self.params.replace(self.date_from, self.date_from + "1")
+        response = self.client.get(self.analytics_url + self.params)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class ActivityViewTest(APITestCase):
+
+    def setUp(self):
+        self.analytics_url = reverse('social_network-activity')
+        user_data = {
+            'email': 'test1@mail.ru',
+            'username': 'test1',
+            'password': 'alksdfjs',
+        }
+        self.user = User.objects.create(**user_data)
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.user.tokens['access'])
+        self.params = "?username={username}".format(username=user_data.get('username'))
+
+    def test_cannot_get_without_data(self):
+        response = self.client.get(self.analytics_url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_analytics_without_authorization(self):
+        self.client.credentials()
+        response = self.client.get(self.analytics_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_can_get_activity(self):
+        response = self.client.get(self.analytics_url + self.params)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_cannot_if_user_not_exist(self):
+        self.params += "invalid"
         response = self.client.get(self.analytics_url + self.params)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
