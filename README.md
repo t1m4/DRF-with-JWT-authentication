@@ -12,39 +12,115 @@
 
 <h1>Installation</h1>
 <p>Install all requirements</p>
-<code>pip install requirements.txt</code>
+
+`pip install requirements.txt`
 <p>Run tests...</p>
-<code>python manage.py test</code>
+
+`python manage.py test`
 <p>And if everything all right start server</p>
-<code>python manage.py runserver</code>
+
+`python manage.py runserver`
 
 
 
 <h1>Basic API Features</h1>
 <h3>Post creation using POST request</h3>
 
-<p>1. </p>
+<p>1. Sign up example</p>
+
+```json
+{
+  'username', "test",
+  'email', "test@example.com",
+  'password', "password",
+  'double_password', "password",
+}
+```
+<p>2. Login example</p>
+
+```json
+{
+  'username', "test",
+  'password', "password",
+}
+```
+<p>3. Post creation example</p>
+
+```json
+{
+  'title', "test",
+  'description', "I love testing!",
+}
+```
+<p>4. Post like/unlike example</p>
+
+```json
+{
+  'post_id', "test",
+}
+```
+<p>4. Analytics point example</p>
+
+```curl
+GET /facebook/api/analitics/?date_from=2020-02-02&date_to=2020-02-15
+```
+<p>4. Activity point example</p>
+
+```curl
+GET /facebook/api/activity/?username=test
+```
+```json
+{
+  'last_login': '2021-07-19 11:31:55',
+  'last_request': '2021-07-19 11:48:37',
+}
+```
 
 <h1>Authentication Using JWT</h1>
 <p>1. Override default User model</p>
 <p>2. Override default UserManager model</p>
 <p>3. Add rest_framework_simplejwt library </p>
-<code> INSTALLED_APPS += [
-    'rest_framework_simplejwt'
-]</code>
 
+```python
+INSTALLED_APPS += [
+    'rest_framework_simplejwt'
+]
+```
+
+<h1>Automated bot</h1>
+1. Start bot from <code>automated_bot/</code>
+
+```python async_bot.py```
+
+2.The bot use data from `automated_bot/.env</` file
+
+```python
+number_of_users=5
+max_posts_per_user=7
+max_likes_per_user=8
+```
+3. Sign Up `number_of_users` users
+
+4. Each user creates random number of posts, but maximum `max_posts_per_user` 
+
+5. Each user randomly like `max_likes_per_user` posts
 
 
 <h1>Security Tips</h1>
-<p>1. Сheck password strength</p>
+<p>1. Сheck  password strength</p>
 <p>2. Add lifetime for tokens</p>
-<code>SIMPLE_JWT = {
+
+```python
+SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
-</code>
+```
 <p>3. Add throttling to your views. Configure it for yourself.</p>
-```REST_FRAMEWORK = {
+
+```python
+# settings.py
+REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
@@ -54,6 +130,8 @@
         'user': '1000/day'
     }
 ```
-`class RegisterAPIView(APIView):
+```python
+# views.py
+class RegisterAPIView(APIView):
     throttle_classes = [AnonRateThrottle]
-`
+```
