@@ -10,3 +10,9 @@ djangorestframework_simplejwt
 drf-yasg
 # debug
 django-debug-toolbar
+
+# environment
+python-dotenv
+
+# automated bot
+aiohttp
