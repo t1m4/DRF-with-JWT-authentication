@@ -8,8 +8,9 @@ sqlparse==0.4.1
 djangorestframework
 djangorestframework_simplejwt
 drf-yasg
-# debug
+# debug and testing
 django-debug-toolbar
+coverage
 
 # environment
 python-dotenv
