@@ -1,3 +1,6 @@
+from automated_bot import config
+
+
 class User():
 
     def __init__(self, username, email, access, refresh):
@@ -6,6 +9,7 @@ class User():
         self.access = access
         self.refresh = refresh
         self.posts = None
+        self.like_count = config.max_likes_per_user
 
     def __str__(self):
         return self.username
@@ -20,7 +24,7 @@ class Post():
         self.likes = None
 
     def __str__(self):
-        return "%s %s" % (self.title, self.user)
+        return "%s-%s" % (self.title, self.user)
 
 
 class Like():
@@ -29,9 +33,4 @@ class Like():
         self.user = user
 
     def __str__(self):
-        return "%s %s" % (self.post.title, self.user)
-
-
-if __name__ == '__main__':
-    u = User(username="12", email="132", access='123', refresh="123")
-    print(u)
+        return "%s-%s" % (self.post.title, self.user)

@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -23,7 +22,7 @@ logger.addHandler(handler)
 host = "http://127.0.0.1:8000"
 url_register = host + "/auth/api/register/"
 url_create_post = host + "/facebook/api/create_post/"
-url_like_post = host + "facebook/api/like/"
+url_like_post = host + "/facebook/api/like/"
 
 # get env variables
 number_of_users = int(os.environ.get('number_of_users', 10))
@@ -41,4 +40,8 @@ register_data = {
 post_data = {
     'title': 'post_title_0',
     'description': 'description',
+}
+
+like_data = {
+    'post_id': 0
 }
