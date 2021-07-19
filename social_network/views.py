@@ -14,40 +14,35 @@ from social_network.serializers import CreatePostSerializer, CreateLikeSerialize
 from social_network.tools import from_date_to_datetime
 
 
-class CreatePostAPIView(APIView):
+class CommonPostApiView(APIView):
+    serializer_class = None
+    permission_classes = ()
+    status_code = None
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        # pass a user
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=self.status_code)
+
+
+class CreatePostAPIView(CommonPostApiView):
     serializer_class = CreatePostSerializer
     permission_classes = (IsAuthenticated,)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.POST)
-        serializer.is_valid(raise_exception=True)
-        # pass a user
-        serializer.save(user=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    status_code = status.HTTP_201_CREATED
 
 
-class LikeAPIView(APIView):
+class LikeAPIView(CommonPostApiView):
     serializer_class = CreateLikeSerializer
     permission_classes = (IsAuthenticated,)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.POST)
-        serializer.is_valid(raise_exception=True)
-        # pass a user
-        serializer.save(user=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    status_code = status.HTTP_201_CREATED
 
 
-class UnlikeAPIView(APIView):
+class UnlikeAPIView(CommonPostApiView):
     serializer_class = UnlikeSerializer
     permission_classes = (IsAuthenticated,)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.POST)
-        serializer.is_valid(raise_exception=True)
-        # pass a user
-        serializer.save(user=request.user)
-        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+    status_code = status.HTTP_204_NO_CONTENT
 
 
 class AnalyticsAPIView(APIView):
