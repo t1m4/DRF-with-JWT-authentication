@@ -11,68 +11,72 @@
 </ul>
 
 <h1>Installation</h1>
-<p>Install all requirements</p>
+1. Install all requirements.
 
 `pip install requirements.txt`
-<p>Run tests...</p>
+
+2. Run tests...
 
 `python manage.py test`
-<p>And if everything all right start server</p>
+
+3. Add `.env` file to main and `automated_bot/` directories.
+
+4. And if everything all right start server.
 
 `python manage.py runserver`
 
 
 
 <h1>Basic API Features</h1>
-<h3>Post creation using POST request</h3>
+<h3>Post creation using POST request.</h3>
 
-<p>1. Sign up example</p>
-
-```json
-{
-  'username', "test",
-  'email', "test@example.com",
-  'password', "password",
-  'double_password', "password",
-}
-```
-<p>2. Login example</p>
+<p>1. Sign up example.</p>
 
 ```json
 {
-  'username', "test",
-  'password', "password",
+  "username": "test",
+  "email": "test@example.com",
+  "password": "password",
+  "double_password": "password"
 }
 ```
-<p>3. Post creation example</p>
+<p>2. Login example.</p>
 
 ```json
 {
-  'title', "test",
-  'description', "I love testing!",
+  "username": "test",
+  "password": "password"
 }
 ```
-<p>4. Post like/unlike example</p>
+<p>3. Post creation example.</p>
 
 ```json
 {
-  'post_id', "test",
+  "title": "test",
+  "description": "I love testing!"
 }
 ```
-<p>4. Analytics point example</p>
+<p>4. Post like/unlike example.</p>
+
+```json
+{
+  "post_id": "test"
+}
+```
+<p>5. Analytics point example.</p>
 
 ```curl
 GET /facebook/api/analitics/?date_from=2020-02-02&date_to=2020-02-15
 ```
-<p>4. Activity point example</p>
+<p>6. Activity point example.</p>
 
 ```curl
 GET /facebook/api/activity/?username=test
 ```
 ```json
 {
-  'last_login': '2021-07-19 11:31:55',
-  'last_request': '2021-07-19 11:48:37',
+  "last_login": "2021-07-19 11:31:55",
+  "last_request": "2021-07-19 11:48:37"
 }
 ```
 
