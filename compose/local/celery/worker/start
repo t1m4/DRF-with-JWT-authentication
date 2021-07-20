@@ -1,0 +1,2 @@
+#!/bin/sh
+celery -A starnavi.celery_app worker -l INFO --beat

@@ -17,7 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR/'.env')
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -207,4 +207,16 @@ LOGGING = {
             'propagate': False,
         }
     }
+}
+
+# Celery
+CELERY_BROKER_URL = 'redis://app_redis:6379/1'
+
+CELERY_BEAT_SCHEDULE = {
+    'add': {
+        'task': 'authentication.tasks.add',
+        'schedule': 10.0,
+        'args': (1, 2),
+
+    },
 }

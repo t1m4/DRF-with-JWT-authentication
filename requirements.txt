@@ -8,12 +8,21 @@ sqlparse==0.4.1
 djangorestframework
 djangorestframework_simplejwt
 drf-yasg
+
 # debug and testing
 django-debug-toolbar
 coverage
+
+# code style
+pylint
+pylint_django
 
 # environment
 python-dotenv
 
 # automated bot
 aiohttp
+
+# celery
+celery
+redis

@@ -1,13 +1,25 @@
 version: '3'
 services:
-#  postgres:
-#    image: "postgres" # use latest official postgres version
-#    env_file:
-#      - .postgresql # configure postgres
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+  #  postgres:
+  #    image: "postgres" # use latest official postgres version
+  #    env_file:
+  #      - .postgresql # configure postgres
+  #    ports:
+  #      - "5432:5432"
+  #    volumes:
+  #      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+  redis:
+    env_file:
+      - ".env"
+    image: "redis"
+    restart: always
+    container_name: 'app_redis'
+    command: redis-server
+    stdin_open: true
+    ports:
+      - '6379:6379'
+    volumes:
+      - "redis-data:/data"
   app:
     build:
       context: .
@@ -20,9 +32,25 @@ services:
     ports:
       - "8000:8000"
     command: /start
-#    depends_on:
-#      - postgres
+    #    depends_on:
+    #      - postgres
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./compose/local/Dockerfile
+    container_name: 'app_celery'
+    command: /start-celeryworker
+    volumes:
+      - .:/code
+    links:
+      - redis
+    depends_on:
+      - app
+      - redis
+
 
 volumes:
-  database-data: {}# named volumes can be managed easier using docker-compose
+  database-data: { }# named volumes can be managed easier using docker-compose
+  redis-data: { }
 #  pgadmin: # named volumes can be managed easier using docker-compose
