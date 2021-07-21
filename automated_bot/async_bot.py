@@ -36,15 +36,14 @@ async def create_posts_for_user(user):
             response['user'] = user
             post = Post(**response)
             result.append(post)
-
-    return result
-
+    user.posts = result
 
 async def create_users():
     """
     Create users and posts for them
     """
     users = []
+    aws_for_posts = []
     for i in range(config.number_of_users):
         data = config.register_data.copy()
         data['username'] = data['username'].replace("0", str(i + 1))
@@ -52,9 +51,12 @@ async def create_users():
         response = await post_request(config.url_register, data)
         if response:
             user = User(**response)
-            posts = await create_posts_for_user(user)
-            user.posts = posts
+            aws_for_posts.append(create_posts_for_user(user))
+            # posts = await create_posts_for_user(user)
+            # user.posts = posts
             users.append(user)
+    r = await asyncio.gather(*aws_for_posts)
+
     return users
 
 
@@ -91,6 +93,7 @@ async def create_like_for_user_and_post(user, post):
 async def main():
     print(datetime.now())
     users = await create_users()
+    print(datetime.now())
     likes = await create_random_likes(users)
     print(len(likes))
     print(datetime.now())
