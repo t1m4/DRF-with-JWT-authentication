@@ -20,7 +20,10 @@ class CommonPostApiView(APIView):
     status_code = None
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.POST)
+        context = {
+            "request": self.request,
+        }
+        serializer = self.serializer_class(data=request.POST, context=context)
         serializer.is_valid(raise_exception=True)
         # pass a user
         serializer.save(user=request.user)
@@ -31,6 +34,8 @@ class CreatePostAPIView(CommonPostApiView):
     serializer_class = CreatePostSerializer
     permission_classes = (IsAuthenticated,)
     status_code = status.HTTP_201_CREATED
+
+
 
 
 class LikeAPIView(CommonPostApiView):

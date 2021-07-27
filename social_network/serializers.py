@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework.views import exception_handler
 
 from authentication.models import User
@@ -17,38 +18,23 @@ class CreatePostSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', ]
 
 
+
 class CreateLikeSerializer(serializers.ModelSerializer):
     """ Serializer for create Like """
-    post_id = serializers.IntegerField(min_value=1, write_only=True)
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     class Meta:
         model = Like
-        # fields = ['id', 'post_id', 'date', 'time']
-        # read_only_fields = ['date', 'time']
-        fields = ['id', 'post_id', 'create_at']
+        fields = ['id', 'post', 'user', 'create_at']
         read_only_fields = ['create_at']
-
-    def create(self, validated_data):
-        try:
-            return Like.objects.create(**validated_data)
-        except IntegrityError:
-            # Raise an error because post and user aren't unique together
-            raise ValidationError("You already like this post")
-
-    def validate(self, validated_data):
-        """
-        Validate post_id field
-        if post doesn't exist, raise ValidationError
-        else add post in validated_data
-        """
-        post_id = validated_data['post_id']
-        post = get_object_or_none(Post, pk=post_id)
-        if post is None:
-            raise ValidationError("Post with that post_id doesn't exist")
-
-        del validated_data['post_id']
-        validated_data['post'] = post
-        return validated_data
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Like.objects.all(),
+                fields=['user', 'post']
+            )
+        ]
 
 
 class UnlikeSerializer(serializers.ModelSerializer):
