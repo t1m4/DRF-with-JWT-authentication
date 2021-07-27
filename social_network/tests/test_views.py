@@ -75,7 +75,7 @@ def like_and_unlike_setUp(self):
     }
     post_id = Post.objects.create(**post_one).id
     self.like_data = {
-        'post_id': post_id
+        'post': post_id
     }
 
 
@@ -117,28 +117,27 @@ class UnlikeViewTest(APITransactionTestCase):
 
     def test_cannot_unlike_without_data(self):
         self.client.post(self.like_url, self.like_data)
-        response = self.client.post(self.unlike_url)
+        response = self.client.delete(self.unlike_url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_cannot_unlike_without_authorization(self):
         self.client.credentials()
         self.client.post(self.like_url, self.like_data)
-        response = self.client.post(self.unlike_url)
+        response = self.client.delete(self.unlike_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_can_unlike(self):
         self.client.post(self.like_url, self.like_data)
-        response = self.client.post(self.unlike_url, self.like_data)
+        response = self.client.delete(self.unlike_url, self.like_data)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_cannot_unlike_if_not_exist_like(self):
-        response = self.client.post(self.unlike_url, self.like_data)
+        response = self.client.delete(self.unlike_url, self.like_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_cannot_unlike_not_exists_post(self):
-        self.like_data['post_id'] += 1
-        self.client.post(self.unlike_url, self.like_data)
-        response = self.client.post(self.like_url, self.like_data)
+        self.like_data['post'] += 1
+        response = self.client.delete(self.unlike_url, self.like_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 

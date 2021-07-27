@@ -36,18 +36,23 @@ class CreatePostAPIView(CommonPostApiView):
     status_code = status.HTTP_201_CREATED
 
 
-
-
 class LikeAPIView(CommonPostApiView):
     serializer_class = CreateLikeSerializer
     permission_classes = (IsAuthenticated,)
     status_code = status.HTTP_201_CREATED
 
 
-class UnlikeAPIView(CommonPostApiView):
+class UnlikeAPIView(APIView):
     serializer_class = UnlikeSerializer
     permission_classes = (IsAuthenticated,)
     status_code = status.HTTP_204_NO_CONTENT
+
+    def delete(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.POST)
+        serializer.is_valid(raise_exception=True)
+        # pass a user
+        serializer.save(user=request.user)
+        return Response(status=self.status_code)
 
 
 class AnalyticsAPIView(APIView):

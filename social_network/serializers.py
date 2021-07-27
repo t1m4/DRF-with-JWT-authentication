@@ -1,4 +1,3 @@
-from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueTogetherValidator
@@ -18,12 +17,9 @@ class CreatePostSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', ]
 
 
-
 class CreateLikeSerializer(serializers.ModelSerializer):
     """ Serializer for create Like """
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Like
@@ -39,32 +35,19 @@ class CreateLikeSerializer(serializers.ModelSerializer):
 
 class UnlikeSerializer(serializers.ModelSerializer):
     """ Serializer for create Like """
-    post_id = serializers.IntegerField(min_value=1, write_only=True)
 
     class Meta:
         model = Like
-        fields = ['post_id', ]
+        fields = ['post', ]
 
-    def save(self, user):
+    def save(self, *args, **kwargs):
         post = self.validated_data.get('post')
+        user = kwargs.pop('user')
         like = get_object_or_none(Like, post=post, user=user)
-        if not like:
-            raise ValidationError("You can't delete this like.")
-        like.delete()
-
-    def validate(self, validated_data):
-        """
-        Validate like_id field
-        if like doesn't exist raise ValidationError
-        else add like in validation_data
-        """
-        post_id = validated_data['post_id']
-        post = get_object_or_none(Post, pk=post_id)
-        if post is None:
-            raise ValidationError("Post with that post_id doesn't exist")
-
-        validated_data['post'] = post
-        return validated_data
+        if like:
+            like.delete()
+        else:
+            raise serializers.ValidationError("Like doesn't exist'")
 
 
 class DateSerializer(serializers.Serializer):
